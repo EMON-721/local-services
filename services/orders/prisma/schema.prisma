@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  userId        String      @map("user_id")
+  technicianId  String?     @map("technician_id")
+  status        OrderStatus @default(PENDING)
+  totalAmount   Decimal     @map("total_amount") @db.Decimal(10, 2)
+  scheduledDate DateTime?   @map("scheduled_date")
+  completedDate DateTime?   @map("completed_date")
+  notes         String?
+  rating        Int?
+  review        String?
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+
+  items   OrderItem[]
+  address OrderAddress?
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id          String  @id @default(uuid())
+  orderId     String  @map("order_id")
+  serviceId   String  @map("service_id")
+  serviceName String  @map("service_name")
+  quantity    Int     @default(1)
+  unitPrice   Decimal @map("unit_price") @db.Decimal(10, 2)
+  totalPrice  Decimal @map("total_price") @db.Decimal(10, 2)
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_items")
+}
+
+model OrderAddress {
+  id       String @id @default(uuid())
+  orderId  String @unique @map("order_id")
+  street   String
+  city     String
+  state    String
+  zipCode  String @map("zip_code")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_addresses")
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  category    String
+  basePrice   Decimal  @map("base_price") @db.Decimal(10, 2)
+  duration    Int      // in minutes
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("services")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}

@@ -1,0 +1,91 @@
+version: '3.8'
+
+# Development overrides - use with: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  # Auth Service - Development with hot reload
+  auth:
+    build:
+      context: .
+      dockerfile: services/auth/Dockerfile
+      target: deps  # Use deps stage for dev
+    volumes:
+      - ./services/auth/src:/app/services/auth/src
+      - ./packages:/app/packages
+    command: ["pnpm", "--filter", "@local-services/auth", "dev"]
+    environment:
+      NODE_ENV: development
+
+  # Notifications Service - Development with hot reload
+  notifications:
+    build:
+      context: ./services/notifications
+      dockerfile: Dockerfile
+    volumes:
+      - ./services/notifications/app:/app/app
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "3002", "--reload"]
+    environment:
+      DEBUG: "true"
+
+  # Orders Service - Development with hot reload
+  orders:
+    build:
+      context: .
+      dockerfile: services/orders/Dockerfile
+      target: deps
+    volumes:
+      - ./services/orders/src:/app/services/orders/src
+      - ./packages:/app/packages
+    command: ["pnpm", "--filter", "@local-services/orders", "dev"]
+    environment:
+      NODE_ENV: development
+
+  # Payment Service - Development with hot reload
+  payment:
+    build:
+      context: ./services/payment
+      dockerfile: Dockerfile
+    volumes:
+      - ./services/payment:/app
+    command: ["python", "manage.py", "runserver", "0.0.0.0:3004"]
+    environment:
+      DEBUG: "true"
+
+  # Web Frontend - Development with hot reload
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      target: deps
+    volumes:
+      - ./apps/web/src:/app/apps/web/src
+      - ./packages:/app/packages
+    command: ["pnpm", "--filter", "@local-services/web", "dev"]
+    environment:
+      NODE_ENV: development
+
+  # Admin Panel - Development with hot reload
+  admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+      target: deps
+    volumes:
+      - ./apps/admin/src:/app/apps/admin/src
+      - ./packages:/app/packages
+    command: ["pnpm", "--filter", "@local-services/admin", "dev"]
+    environment:
+      NODE_ENV: development
+
+  # Technician Panel - Development with hot reload
+  technician:
+    build:
+      context: .
+      dockerfile: apps/technician/Dockerfile
+      target: deps
+    volumes:
+      - ./apps/technician/src:/app/apps/technician/src
+      - ./packages:/app/packages
+    command: ["pnpm", "--filter", "@local-services/technician", "dev"]
+    environment:
+      NODE_ENV: development

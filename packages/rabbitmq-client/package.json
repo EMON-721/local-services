@@ -1,0 +1,29 @@
+{
+  "name": "@local-services/rabbitmq-client",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src/",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.5"
+  },
+  "devDependencies": {
+    "@local-services/config": "workspace:*",
+    "@local-services/types": "workspace:*",
+    "@types/amqplib": "^0.10.5",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}
