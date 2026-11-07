@@ -2,11 +2,7 @@
 
 ## Local Services platform
 
-This repository contains a multi-application service-booking platform with separate customer (`apps/web`), technician (`apps/technician`) and administrator (`apps/admin`) interfaces. Backend services cover authentication, service catalogue data, orders, notifications and payments. The codebase uses a pnpm/Turborepo workspace.
-
-### Administration
-
-The administrator app is separated from the customer and technician interfaces. It is intended for operational work such as service catalogue maintenance, account oversight and booking management. Authorization and production integration depend on the corresponding backend services and configured database.
+This repository contains a multi-application service-booking platform with customer (`apps/web`) and technician (`apps/technician`) interfaces. Backend services cover authentication, service catalogue data, orders, notifications and payments. The codebase uses a pnpm/Turborepo workspace.
 
 ### Development
 
